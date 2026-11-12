@@ -16,7 +16,8 @@ const (
 	onQuery       extension.Handler = "query"
 	onFind        extension.Handler = "find"
 	onNew         extension.Handler = "new"
-	onEdit        extension.Handler = "edit"
+	onMode        extension.Handler = "mode"
+	onSplit       extension.Handler = "split"
 	onDraft       extension.Handler = "draft"
 	onSave        extension.Handler = "save"
 	onLink        extension.Handler = "link"
@@ -47,9 +48,11 @@ type app struct {
 	selected string
 	// text is the open note as the person has it; saved is what the file
 	// holds, so the two differ while there is something to save.
-	text    string
-	saved   string
-	editing bool
+	text  string
+	saved string
+	mode  mode
+	// split is the share of the editor in split mode.
+	split float64
 
 	// focus is the key of the field to hand the keyboard once the next tree
 	// is out: lich drops a focus for a field it has not drawn yet.
@@ -93,12 +96,17 @@ func (a *app) event(e extension.EventData) {
 		a.focus = searchKey
 	case onNew:
 		a.newNote()
-	case onEdit:
-		a.edit(e.Checked)
+	case onMode:
+		a.setMode(mode(e.Text))
+	case onSplit:
+		a.split = e.Ratio
 	case onDraft:
 		a.text = e.Text
 	case onSave:
-		a.save()
+		// Saving ends an edit; a split keeps both sides up.
+		if a.save() && a.mode == modeEdit {
+			a.mode = modePreview
+		}
 	case onLink:
 		// lich opens only http and https, and drops the rest.
 		a.send(extension.OpenExternal.New(extension.OpenExternalData{URL: e.Text}))
@@ -140,7 +148,7 @@ func (a *app) chooseVault() {
 		return
 	}
 	a.vault, a.picking = vault, false
-	a.selected, a.text, a.saved, a.editing, a.query = "", "", "", false, ""
+	a.selected, a.text, a.saved, a.query = "", "", "", ""
 	a.reload()
 }
 
@@ -155,7 +163,10 @@ func (a *app) open(path string) {
 		a.fail("error.read", err)
 		return
 	}
-	a.selected, a.text, a.saved, a.editing = path, text, text, false
+	a.selected, a.text, a.saved = path, text, text
+	if a.mode == modeEdit {
+		a.mode = modePreview
+	}
 }
 
 func (a *app) newNote() {
@@ -168,16 +179,36 @@ func (a *app) newNote() {
 		return
 	}
 	a.selected, a.text, a.saved, a.query = path, "", "", ""
-	a.edit(true)
+	if a.mode == modePreview {
+		a.mode = modeEdit
+	}
+	a.focus = editorKey(a.selected)
 	a.reload()
 }
 
-func (a *app) edit(on bool) {
-	a.editing = on
-	if on {
+// mode is how the open note shows: rendered, raw beside rendered, or raw.
+type mode string
+
+const (
+	modePreview mode = "preview"
+	modeSplit   mode = "split"
+	modeEdit    mode = "edit"
+	// defaultSplit is the editor's share when a split first opens.
+	defaultSplit = 0.5
+)
+
+func (a *app) setMode(m mode) {
+	switch m {
+	case modeSplit, modeEdit:
 		a.focus = editorKey(a.selected)
+	case modePreview:
+	default:
+		return
 	}
+	a.mode = m
 }
+
+func (m mode) editing() bool { return m == modeSplit || m == modeEdit }
 
 func editorKey(path string) string { return "editor:" + path }
 

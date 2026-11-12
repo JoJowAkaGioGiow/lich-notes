@@ -11,8 +11,10 @@ const (
 	gap            = 8
 	// gutter and islandRadius match lich's own islands (native/DESIGN.md): the
 	// screen draws none, so an extension draws its own.
-	gutter        = 6
-	islandRadius  = 8
+	gutter       = 6
+	islandRadius = 8
+	// minSplit keeps either side of a split readable.
+	minSplit      = 0.2
 	noteRowHeight = 44
 	dateLayout    = "2006-01-02"
 )
@@ -34,7 +36,7 @@ func (a *app) render() {
 
 func (a *app) shortcuts() []extension.Shortcut {
 	keys := []extension.Shortcut{{Keys: "/", Handler: onFind}, {Keys: "ctrl+n", Handler: onNew}}
-	if a.editing {
+	if a.mode.editing() {
 		keys = append(keys, extension.Shortcut{Keys: "ctrl+s", Handler: onSave})
 	}
 	return keys
@@ -106,8 +108,12 @@ func (a *app) notePane() node {
 		extension.Box.New(box{Grow: 1}, extension.Label.New(extension.LabelProps{
 			Text: a.title(), Weight: extension.FontSemibold, MaxLines: 1,
 		})),
-		extension.Toggle.New(extension.ToggleProps{
-			Pressed: a.editing, Text: a.t("edit"), Icon: "pencil", Size: extension.ToggleSizeSM, OnChange: onEdit,
+		extension.ToggleGroup.New(extension.ToggleGroupProps{
+			Value: string(a.mode), Size: extension.ToggleSizeSM, OnChange: onMode, Items: []extension.ToggleItem{
+				{Value: string(modePreview), Text: a.t("preview"), Icon: "eye"},
+				{Value: string(modeSplit), Text: a.t("split"), Icon: "columns-2"},
+				{Value: string(modeEdit), Text: a.t("edit"), Icon: "pencil"},
+			},
 		}),
 		extension.Button.New(extension.ButtonProps{
 			Text: a.t("save"), Size: extension.SizeSM, Disabled: a.text == a.saved, OnPress: onSave,
@@ -123,11 +129,24 @@ func (a *app) notePane() node {
 // noteBody keys the field by the note, so one note's caret and undo history
 // never land on another.
 func (a *app) noteBody() node {
-	if a.editing {
-		return extension.Box.New(box{Grow: 1, Padding: pad}, extension.Textarea.New(extension.TextareaProps{
-			Value: a.text, Placeholder: a.t("placeholder"), Grow: true, OnChange: onDraft,
-		}).WithKey(editorKey(a.selected)))
+	switch a.mode {
+	case modeEdit:
+		return a.editor()
+	case modeSplit:
+		return extension.SplitPane.New(extension.SplitPaneProps{
+			Ratio: a.split, MinRatio: minSplit, MaxRatio: 1 - minSplit, OnResize: onSplit,
+		}, a.editor(), a.preview())
 	}
+	return a.preview()
+}
+
+func (a *app) editor() node {
+	return extension.Box.New(box{Grow: 1, Padding: pad}, extension.Textarea.New(extension.TextareaProps{
+		Value: a.text, Placeholder: a.t("placeholder"), Grow: true, OnChange: onDraft,
+	}).WithKey(editorKey(a.selected)))
+}
+
+func (a *app) preview() node {
 	return extension.Scroll.New(extension.ScrollProps{},
 		extension.Box.New(box{Padding: pad * 2}, extension.Markdown.New(extension.MarkdownProps{Text: a.text, OnOpen: onLink})))
 }

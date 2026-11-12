@@ -1,6 +1,8 @@
 {
   "search": "Buscar notas",
   "new": "Nova nota",
+  "preview": "Visualizar",
+  "split": "Lado a lado",
   "edit": "Editar",
   "save": "Salvar",
   "saved": "{title} salva",

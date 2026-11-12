@@ -26,14 +26,13 @@ func main() {
 	a := &app{
 		cat: cat, lang: i18n.FromEnv(), dataDir: dataDir,
 		vault: settings.Vault, picking: settings.Vault == "",
+		mode: modePreview, split: defaultSplit,
 		send: func(msg extension.Message) {
 			if err := conn.Send(msg); err != nil {
 				log.Printf("send: %v", err)
 			}
 		},
 	}
-	// An extension restarted under an open screen gets no surface.opened,
-	// only the language, so the notes are listed before the first render.
 	a.reload()
 	for msg := range conn.Messages() {
 		a.handle(msg)

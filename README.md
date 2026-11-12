@@ -10,14 +10,16 @@ Read it to see how an extension is put together, then copy what you need into yo
 - Lists the Markdown notes of a folder you choose (a vault), newest first. Sub-folders are included and
   folders whose name starts with a dot are skipped.
 - Filters the list as you type, by title and by content.
-- Shows the selected note rendered. **Edit** switches to the Markdown source, **Save** writes the file.
+- Shows the selected note three ways: **Preview** renders it, **Split** puts the Markdown source beside the
+  rendered note and updates it as you type, **Edit** shows the source alone. **Save** writes the file, and
+  saving from Edit goes back to the preview.
 - Creates a new note as `Untitled N.md`.
 
 | Key | Does |
 | --- | --- |
 | `/` | Puts the keyboard in the search field |
 | `Ctrl+N` | New note |
-| `Ctrl+S` | Save, while editing |
+| `Ctrl+S` | Save, in Split or Edit |
 | `Esc` | Hands the keyboard back, so `/` works again |
 
 A note you changed is saved when you open another one, so nothing typed is lost by clicking away.
@@ -97,8 +99,6 @@ Things here that are easy to get wrong in your own:
 
 - **Save into the data directory**, not beside the executable: an update replaces the extension's folder.
   lich passes the path in `LICH_EXTENSION_DATA`.
-- **Render when the language arrives** as well as when the screen opens. An extension that lich restarts
-  under an open screen is told the language but not that the screen is open.
 - **Send `focus` after the render** that draws the field. lich drops a focus for a field it has not drawn.
 - **Key a field by what it edits.** The editor here is keyed by the note's path, so one note's caret never
   lands in another.

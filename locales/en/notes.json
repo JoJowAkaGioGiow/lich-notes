@@ -1,6 +1,8 @@
 {
   "search": "Search notes",
   "new": "New note",
+  "preview": "Preview",
+  "split": "Split",
   "edit": "Edit",
   "save": "Save",
   "saved": "Saved {title}",
