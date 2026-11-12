@@ -120,7 +120,7 @@ func (a *app) notePane() node {
 func (a *app) noteBody() node {
 	if a.editing {
 		return extension.Box.New(box{Grow: 1, Padding: pad}, extension.Textarea.New(extension.TextareaProps{
-			Value: a.text, Placeholder: a.t("placeholder"), OnChange: onDraft,
+			Value: a.text, Placeholder: a.t("placeholder"), Grow: true, OnChange: onDraft,
 		}).WithKey(editorKey(a.selected)))
 	}
 	return extension.Scroll.New(extension.ScrollProps{},
