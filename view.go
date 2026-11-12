@@ -9,8 +9,12 @@ const (
 	vaultFormWidth = 460
 	pad            = 12
 	gap            = 8
-	noteRowHeight  = 44
-	dateLayout     = "2006-01-02"
+	// gutter and islandRadius match lich's own islands (native/DESIGN.md): the
+	// screen draws none, so an extension draws its own.
+	gutter        = 6
+	islandRadius  = 8
+	noteRowHeight = 44
+	dateLayout    = "2006-01-02"
 )
 
 type (
@@ -21,8 +25,8 @@ type (
 func (a *app) render() {
 	data := extension.RenderData{Surface: surfaceID, Root: a.vaultForm()}
 	if !a.picking {
-		data.Root = extension.Box.New(box{Direction: extension.DirectionRow, Grow: 1},
-			a.sidebar(), extension.VerticalRule.New(extension.NoProps{}), a.notePane())
+		data.Root = extension.Box.New(box{Direction: extension.DirectionRow, Grow: 1, Gap: gutter},
+			a.sidebar(), a.notePane())
 		data.Shortcuts = a.shortcuts()
 	}
 	a.send(extension.Render.New(data))
@@ -56,7 +60,8 @@ func (a *app) vaultForm() node {
 		form = append(form, extension.Label.New(extension.LabelProps{Text: a.vaultError, Color: "destructive"}))
 	}
 	form = append(form, extension.Box.New(box{Direction: extension.DirectionRow, Gap: gap}, actions...))
-	return extension.Box.New(box{Grow: 1, Align: extension.AlignCenter, Justify: extension.JustifyCenter},
+	return extension.Box.New(box{Grow: 1, Align: extension.AlignCenter, Justify: extension.JustifyCenter,
+		Background: "background", Radius: islandRadius},
 		extension.Box.New(box{Width: vaultFormWidth, Gap: pad}, form...))
 }
 
@@ -69,7 +74,7 @@ func (a *app) sidebar() node {
 		extension.GhostIconButton.New(extension.GhostIconButtonProps{Icon: "plus", Hint: a.t("new"), OnPress: onNew}),
 		extension.GhostIconButton.New(extension.GhostIconButtonProps{Icon: "folder-open", Hint: a.t("vault.change"), OnPress: onVaultChange}),
 	)
-	return extension.Box.New(box{Width: sidebarWidth, Background: "sidebar"}, header, a.noteList())
+	return extension.Box.New(box{Width: sidebarWidth, Background: "sidebar", Radius: islandRadius}, header, a.noteList())
 }
 
 func (a *app) noteList() node {
@@ -108,7 +113,7 @@ func (a *app) notePane() node {
 			Text: a.t("save"), Size: extension.SizeSM, Disabled: a.text == a.saved, OnPress: onSave,
 		}),
 	}
-	return extension.Box.New(box{Grow: 1},
+	return extension.Box.New(box{Grow: 1, Background: "background", Radius: islandRadius},
 		extension.Box.New(box{Direction: extension.DirectionRow, Gap: gap, Padding: pad, Align: extension.AlignCenter}, bar...),
 		extension.Separator.New(extension.NoProps{}),
 		a.noteBody(),
