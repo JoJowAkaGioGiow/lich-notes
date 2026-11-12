@@ -2,3 +2,5 @@ github.com/lichdotdev/lich/extension v0.0.0-20261112011100-75641eeae5f2 h1:naAIR
 github.com/lichdotdev/lich/extension v0.0.0-20261112011100-75641eeae5f2/go.mod h1:fHC2EGoom4plQTW06+3Y4xaktnSK9cAGf7yCE9l+DYI=
 github.com/lichdotdev/lich/extension v0.0.0-20261112021818-7599f51688c1 h1:5ypfI4qdW8Vdv9sYOi821Xwt3ipGXVB9W74becnMgOc=
 github.com/lichdotdev/lich/extension v0.0.0-20261112021818-7599f51688c1/go.mod h1:fHC2EGoom4plQTW06+3Y4xaktnSK9cAGf7yCE9l+DYI=
+github.com/lichdotdev/lich/extension v0.1.0 h1:Kkk8Oc0TW/afOIfNYdzSCL/UQtkzyjbBU9eyFNM3u3A=
+github.com/lichdotdev/lich/extension v0.1.0/go.mod h1:fHC2EGoom4plQTW06+3Y4xaktnSK9cAGf7yCE9l+DYI=
