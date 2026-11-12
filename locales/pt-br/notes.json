@@ -1,0 +1,30 @@
+{
+  "search": "Buscar notas",
+  "new": "Nova nota",
+  "edit": "Editar",
+  "save": "Salvar",
+  "saved": "{title} salva",
+  "placeholder": "Escreva em Markdown",
+  "empty": {
+    "vault": "Nenhuma nota neste cofre",
+    "search": "Nenhuma nota encontrada",
+    "select": "Nenhuma nota aberta",
+    "selectHint": "Escolha uma nota na lista ou pressione Ctrl+N para começar uma."
+  },
+  "vault": {
+    "title": "Escolha o seu cofre",
+    "description": "Um cofre é uma pasta de notas em Markdown. O LichNotes lista todos os arquivos .md dentro dela.",
+    "placeholder": "/caminho/das/suas/notas",
+    "open": "Abrir cofre",
+    "cancel": "Cancelar",
+    "change": "Trocar de cofre",
+    "notFolder": "Esse caminho não é uma pasta."
+  },
+  "error": {
+    "list": "Não foi possível listar o cofre",
+    "read": "Não foi possível abrir a nota",
+    "save": "Não foi possível salvar a nota",
+    "create": "Não foi possível criar a nota",
+    "settings": "Não foi possível guardar o cofre"
+  }
+}

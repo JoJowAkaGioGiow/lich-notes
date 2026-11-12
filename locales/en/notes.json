@@ -1,0 +1,30 @@
+{
+  "search": "Search notes",
+  "new": "New note",
+  "edit": "Edit",
+  "save": "Save",
+  "saved": "Saved {title}",
+  "placeholder": "Write in Markdown",
+  "empty": {
+    "vault": "No notes in this vault",
+    "search": "No note matches",
+    "select": "No note open",
+    "selectHint": "Pick a note from the list, or press Ctrl+N to start one."
+  },
+  "vault": {
+    "title": "Choose your vault",
+    "description": "A vault is a folder of Markdown notes. LichNotes lists every .md file under it.",
+    "placeholder": "/path/to/your/notes",
+    "open": "Open vault",
+    "cancel": "Cancel",
+    "change": "Change vault",
+    "notFolder": "That path is not a folder."
+  },
+  "error": {
+    "list": "Could not list the vault",
+    "read": "Could not open the note",
+    "save": "Could not save the note",
+    "create": "Could not create the note",
+    "settings": "Could not remember the vault"
+  }
+}
